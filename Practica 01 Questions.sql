@@ -6,44 +6,94 @@
 USE Chinook
 GO
 
--- Obtener el nombre, apellidos, ciudad y país de cada cliente.
-
+-- Obtener el nombre, apellidos, ciudad y paÃ­s de cada cliente.
+SELECT
+	[FirstName],
+	[LastName],
+	[City],
+	[Country]
+FROM Customer;
 
 -- Obtener todos los artistas cuyo nombre comiencen por "G" (No case sensitive).
-
-
+SELECT
+	[Name]
+FROM Artist
+WHERE Name LIKE 'G%';
 
 -- Obtener todos los artistas que contengan "GU" en su nombre (no case sensitive).
+SELECT
+	[Name]
+FROM Artist
+WHERE Name LIKE '%GU%';
 
+-- Obtener todos los artistas y sus correspondientes Ã¡lbumes (tengan o no tengan).
+SELECT
+	[Name],
+	[Title]
+FROM Artist
+LEFT JOIN Album
+	ON Artist.ArtistId = Album.ArtistId;
 
--- Obtener todos los artistas y sus correspondientes álbumes (tengan o no tengan).
+-- Obtener todos los artistas que no tengan Ã¡lbumes.
+SELECT
+	[Name]
+FROM Artist
+LEFT JOIN Album
+	ON Artist.ArtistId = Album.ArtistId
+WHERE Album.AlbumId IS NULL;
 
+-- Obtener todos los artistas con el nÃºmero total de Ã¡lbumes que tiene (tengan o no).
+SELECT
+	[Name],
+	COUNT([Title]) "Number of albums"
+FROM Artist
+LEFT JOIN Album
+	ON Artist.ArtistId = Album.ArtistId
+GROUP BY [Name];
 
--- Obtener todos los artistas que no tengan álbumes.
+-- Obtener todos los artistas que tengan 3 o mÃ¡s Ã¡lbumes 
+SELECT
+	[Name],
+	COUNT([Title]) "Number of albums"
+FROM Artist
+LEFT JOIN Album
+	ON Artist.ArtistId = Album.ArtistId
+GROUP BY [Name]
+HAVING COUNT([Title]) > 2;
 
+-- Obtener todos los artistas con el nÃºmero total de Ã¡lbumes que tiene (que tengan).
+SELECT
+	[Name],
+	COUNT([Title]) "Number of albums"
+FROM Artist
+JOIN Album
+	ON Artist.ArtistId = Album.ArtistId
+GROUP BY [Name];
 
--- Obtener todos los artistas con el número total de álbumes que tiene (tengan o no).
+-- Obtener todos los artistas con mÃ¡s de 3 Ã¡lbumes y ordenados por el nÃºmero de Ã¡lbumes de menor a mayor.
+SELECT
+	[Name],
+	COUNT([Title]) "Number of albums"
+FROM Artist
+JOIN Album
+	ON Artist.ArtistId = Album.ArtistId
+GROUP BY [Name]
+HAVING COUNT([Title]) > 3
+ORDER BY COUNT([Title]);
 
+-- Obtener todos los medios digitales existentes con el nÃºmero de canciones existentes por cada uno de ellos.
+SELECT
+	MediaType.Name [Name],
+	COUNT(Track.TrackId) "Count"
+FROM MediaType
+LEFT JOIN Track
+	ON MediaType.MediaTypeId = Track.MediaTypeId
+GROUP BY MediaType.Name;
 
--- Obtener todos los artistas que tengan 3 o más álbumes 
-
-
--- Obtener todos los artistas con el número total de álbumes que tiene (que tengan).
-
-
--- Obtener todos los artistas con más de 3 álbumes y ordenados por el número de álbumes de menor a mayor.
-
-
--- Obtener todos los medios digitales existentes con el número de canciones existentes por cada uno de ellos.
-
-
--- Obtener todas las canciones de género Rock.
-
-
-
-
-
-
- 
-
-
+-- Obtener todas las canciones de gÃ©nero Rock.
+SELECT
+	Track.Name [Name]
+FROM Track
+JOIN Genre
+	ON Track.GenreId = Genre.GenreId
+WHERE Genre.Name LIKE 'Rock';
